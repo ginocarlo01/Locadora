@@ -1,5 +1,5 @@
 CREATE TABLE Pessoa (
-id INT NOT NULL AUTO_INCREMENT,
+id INT NOT NULL,
 nome VARCHAR(255) NOT NULL,
 cpf VARCHAR(11) NOT NULL,
 contato VARCHAR(255) NOT NULL,
@@ -8,14 +8,14 @@ PRIMARY KEY (id)
 );
 
 CREATE TABLE Funcionario (
-id INT NOT NULL AUTO_INCREMENT,
+id INT NOT NULL,
 enderecoFilial VARCHAR(255) NOT NULL,
 PRIMARY KEY (id),
 FOREIGN KEY (id) REFERENCES Pessoa (id)
 );
 
 CREATE TABLE Cliente (
-id INT NOT NULL AUTO_INCREMENT,
+id INT NOT NULL,
 tipo VARCHAR(255) NOT NULL,
 PRIMARY KEY (id),
 FOREIGN KEY (id) REFERENCES Pessoa (id)
@@ -33,10 +33,10 @@ FOREIGN KEY (id_cliente) REFERENCES Cliente (id)
 );
 
 CREATE TABLE Locacao (
-id INT NOT NULL AUTO_INCREMENT,
+id INT NOT NULL,
 data DATE NOT NULL,
 dtLocacao DATE NOT NULL,
-dtReserva DATE NOT NULL,
+dtReserva DATE,
 id_funcionario INT NOT NULL,
 id_cliente INT NOT NULL,
 PRIMARY KEY (id),
@@ -45,16 +45,16 @@ FOREIGN KEY (id_cliente) REFERENCES Cliente (id)
 );
 
 CREATE TABLE Filme (
-cod_filme VARCHAR(255) NOT NULL,
+cod_filme INT NOT NULL,
 titulo VARCHAR(255) NOT NULL,
 genero VARCHAR(255) NOT NULL,
-sinopse TEXT NOT NULL,
+sinopse VARCHAR(255) NOT NULL,
 dt_lancamento DATE NOT NULL,
 PRIMARY KEY (cod_filme)
 );
 
 CREATE TABLE Filme_venda (
-cod_filme VARCHAR(255) NOT NULL,
+cod_filme INT NOT NULL,
 preco_venda DECIMAL(10,2) NOT NULL,
 qtdeEstoque INT NOT NULL,
 PRIMARY KEY (cod_filme),
@@ -62,7 +62,7 @@ FOREIGN KEY (cod_filme) REFERENCES Filme (cod_filme)
 );
 
 CREATE TABLE ComporCompra (
-cod_filme VARCHAR(255) NOT NULL,
+cod_filme INT NOT NULL,
 nota_fiscal VARCHAR(255) NOT NULL,
 quantidade INT NOT NULL,
 PRIMARY KEY (cod_filme, nota_fiscal),
@@ -71,7 +71,7 @@ FOREIGN KEY (nota_fiscal) REFERENCES Compra (nota_fiscal)
 );
 
 CREATE TABLE Filme_aluguel (
-cod_filme VARCHAR(255) NOT NULL,
+cod_filme INT NOT NULL,
 preco_diario DECIMAL(10,2) NOT NULL,
 qtdDisponivel INT NOT NULL,
 PRIMARY KEY (cod_filme),
@@ -79,28 +79,27 @@ FOREIGN KEY (cod_filme) REFERENCES Filme (cod_filme)
 );
 
 CREATE TABLE ComporAluguel (
-cod_filme VARCHAR(255) NOT NULL,
-id INT NOT NULL,
-data_reserva DATE NOT NULL,
+cod_filme INT NOT NULL,
+idLocacao INT NOT NULL,
+status varchar(15) NOT NULL,
 data_dev_prevista DATE NOT NULL,
-data_dev_efetiva DATE NOT NULL,
-status VARCHAR(255) NOT NULL,
-PRIMARY KEY (cod_filme, id),
+data_dev_efetiva DATE,
+PRIMARY KEY (cod_filme, idLocacao),
 FOREIGN KEY (cod_filme) REFERENCES Filme_aluguel (cod_filme),
-FOREIGN KEY (id) REFERENCES Locacao (id)
+FOREIGN KEY (idLocacao) REFERENCES Locacao (id)
 );
 
 CREATE TABLE IntegranteFilme (
-id INT NOT NULL AUTO_INCREMENT,
+id INT NOT NULL,
 nome VARCHAR(255) NOT NULL,
 PRIMARY KEY (id)
 );
 
 CREATE TABLE Participacao (
-cod_filme VARCHAR(255) NOT NULL,
+cod_filme INT NOT NULL,
 id INT NOT NULL,
-diretor BOOLEAN NOT NULL,
-atorPrincipal BOOLEAN NOT NULL,
+diretor varchar(3) NOT NULL,
+atorPrincipal varchar(3) NOT NULL,
 PRIMARY KEY (cod_filme, id),
 FOREIGN KEY (cod_filme) REFERENCES Filme (cod_filme),
 FOREIGN KEY (id) REFERENCES IntegranteFilme (id)
