@@ -1,325 +1,189 @@
 CREATE PROCEDURE InserirLocacao
-	@idLocacao int,
-	@dtLocacao date,
-	@idFuncionario int,
-	@idCliente int
-	AS
-	BEGIN TRANSACTION 
-		INSERT INTO Locacao VALUES (@idLocacao, @dtLocacao, @idFuncionario, @idCliente)
-		if @@ROWCOUNT > 0
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
+	@idLocacao INT,
+	@dtLocacao DATE,
+	@idFuncionario INT,
+	@idCliente INT,
+	@valor NUMERIC(5,2)
+AS
+BEGIN
+	BEGIN TRANSACTION;
 
+		INSERT INTO Locacao (id, dtLocacao, id_funcionario, id_cliente, valor)
+		VALUES (@idLocacao, @dtLocacao, @idFuncionario, @idCliente, @valor)
+
+		IF @@ROWCOUNT > 0
+		BEGIN
+			COMMIT TRANSACTION;
+			RETURN 1;
+		END
+		ELSE
+		BEGIN
+			ROLLBACK TRANSACTION;
+			RETURN 0;
+		END
+END;
+---
 CREATE PROCEDURE InserirReserva
-	@idReserva int,
-	@dtReserva date,
-	@idFuncionario int,
-	@valor numeric(5,2)
-	AS
-	BEGIN TRANSACTION 
-		INSERT INTO Locacao VALUES (@idReserva, @dtReserva, @idFuncionario, @valor)
-		if @@ROWCOUNT > 0
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
+	@idReserva INT,
+	@dtLocacao DATE,
+	@idFuncionario INT,
+	@idCliente INT,
+	@valor NUMERIC(5,2)
+AS
+BEGIN
+	BEGIN TRANSACTION;
 
-CREATE PROCEDURE InserirFilmeNaLocacao
-	@codFilme int,
-	@idLocacao int,
-	@dtDevPrevista date,
-	@dtDevefetiva date
-	AS
-	BEGIN TRANSACTION
-		INSERT INTO ComporAluguel VALUES (@codFilme, @idLocacao, 'Ativo', @dtDevPrevista, @dtDevefetiva)
-		if @@ROWCOUNT > 0
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
+		INSERT INTO Locacao (id, dtReserva, id_funcionario, id_cliente, valor)
+		VALUES (@idReserva, @dtLocacao, @idFuncionario, @idCliente, @valor)
 
-CREATE PROCEDURE InserirFilmeNaReserva
-	@codFilme int,
-	@idLocacao int,
-	@dtDevPrevista date,
-	@dtDevefetiva date
-	AS
-	BEGIN TRANSACTION
-		INSERT INTO ComporAluguel VALUES (@codFilme, @idLocacao, 'Reserva', @dtDevPrevista, @dtDevefetiva)
-		if @@ROWCOUNT > 0
+		IF @@ROWCOUNT > 0
 		BEGIN
-			COMMIT TRANSACTION
-			return 1
+			COMMIT TRANSACTION;
+			RETURN 1;
 		END
-		else
+		ELSE
 		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
+			ROLLBACK TRANSACTION;
+			RETURN 0;
 		END
-
----ERRADO:
-CREATE PROCEDURE InserirFilmeParaAluguel
-	@codFilme int,
-	@titulo varchar(255),
-	@genero varchar(255),
-	@sinopse varchar(255),
-	@dtLancamento date,
-	@dtDevPrevista date,
-	@dtDevefetiva date,
-	@status varchar(15),
-	@idLocacao int
-	AS
-	BEGIN TRANSACTION
-		INSERT INTO Filme VALUES (@codFilme, @titulo, @genero, @sinopse, @dtLancamento)
-		if @@ROWCOUNT < 0  
-		BEGIN
-			INSERT INTO Filme VALUES (@codFilme, @titulo, @genero, @sinopse, @dtLancamento)
-			INSERT INTO ComporAluguel VALUES (@codFilme, @idLocacao, @status, @dtDevPrevista, @dtDevefetiva)
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			INSERT INTO ComporAluguel VALUES (@codFilme, @idLocacao, @status, @dtDevPrevista, @dtDevefetiva)
-			COMMIT TRANSACTION
-			return 0
-		END
-
-
-CREATE PROCEDURE InserirFilme
-	@codFilme int,
-	@titulo varchar(255),
-	@genero varchar(255),
-	@sinopse varchar(255),
-	@dtLancamento date
-	AS
-	BEGIN TRANSACTION
-		INSERT INTO Filme VALUES (@codFilme, @titulo, @genero, @sinopse, @dtLancamento)
-		if @@ROWCOUNT > 0  
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
-
-CREATE PROCEDURE InserirIntegranteDeFilme
-	@idIntegrante int,
-	@nomeIntegrante varchar(255)
-	AS
-	BEGIN TRANSACTION
-		INSERT INTO IntegranteFilme  VALUES (@idIntegrante, @nomeIntegrante)
-		if @@ROWCOUNT > 0  
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
-
-CREATE PROCEDURE InserirParticipanteDeFilme
-	@codFilme int,
-	@idIntegrante int,
-	@diretor varchar(3),
-	@atorPrincipal varchar(3)
-	AS
-	BEGIN TRANSACTION
-		INSERT INTO Participacao  VALUES (@codFilme, @idIntegrante, @diretor, @atorPrincipal)
-		if @@ROWCOUNT > 0  
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			print ('Este filme nao existe')
-			ROLLBACK TRANSACTION
-			return 0
-		END
-
----ERRADO:
-CREATE PROCEDURE InserirFilmeParaCompra
-	@codFilme int,
-	@titulo varchar(255),
-	@genero varchar(255),
-	@sinopse varchar(255),
-	@dtLancamento date,
-	@ntFiscal varchar(255),
-	@quantidade int
-	AS
-	BEGIN TRANSACTION
-		INSERT INTO Filme VALUES (@codFilme, @titulo, @genero, @sinopse, @dtLancamento)
-		if @@ROWCOUNT < 0  
-		BEGIN
-			INSERT INTO Filme VALUES (@codFilme, @titulo, @genero, @sinopse, @dtLancamento)
-			INSERT INTO ComporCompra VALUES (@codFilme, @ntFiscal, @quantidade)
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			INSERT INTO ComporCompra VALUES (@codFilme, @ntFiscal, @quantidade)
-			COMMIT TRANSACTION
-			return 0
-		END
-
-CREATE PROCEDURE InserirCompra
-	@ntFiscal varchar(255),
-	@dtCompra date,
-	@valor decimal(10,2),
-	@idFuncionario int,
-	@idCliente int
-	AS
-	BEGIN TRANSACTION 
-		INSERT INTO Compra VALUES (@ntFiscal, @dtCompra, @valor, @idFuncionario, @idCliente)
-		if @@ROWCOUNT > 0
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
-
-CREATE PROCEDURE InserirFilmeNaCompra
-	@codFilme int,
-	@precoVenda decimal(10,2),
-	@qtdeEstoque int
-	AS
-	BEGIN TRANSACTION
-		INSERT INTO Filme_venda VALUES (@codFilme, @precoVenda, @qtdeEstoque)
-		if @@ROWCOUNT > 0  
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
-
---ERRADO:
-CREATE PROCEDURE InserirFuncionario
-	@id int,
-	@enderecoFilial varchar(255),
-	@nome varchar(255),
-	@cpf varchar(11),
-	@contato varchar(255),
-	@endereco varchar(255)
-	AS
-	BEGIN TRANSACTION
-		INSERT INTO Funcionario VALUES (@id, @enderecoFilial)
-		if @@ROWCOUNT > 0  
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			INSERT INTO Pessoa VALUES (@nome, @cpf, @contato, @endereco)
-			COMMIT TRANSACTION
-			return 0
-		END
-
---ERRADO:
+END;
+---
 CREATE PROCEDURE InserirCliente
-	@id int,
-	@tipo varchar(255),
+    @id int,
 	@nome varchar(255),
 	@cpf varchar(11),
 	@contato varchar(255),
-	@endereco varchar(255)
-	AS
-	BEGIN TRANSACTION
-		INSERT INTO Cliente VALUES (@id, @tipo)
-		if @@ROWCOUNT > 0  
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			INSERT INTO Pessoa VALUES (@nome, @cpf, @contato, @endereco)
-			COMMIT TRANSACTION
-			return 0
-		END
+	@endereco varchar(255),
+	@tipo VARCHAR(255)
+AS
+BEGIN TRANSACTION;
 
-CREATE PROCEDURE AtualizarLocacao
-	@idLocacao int,
-	@dtLocacao date,
-	@dtReserva date,
-	@idFuncionario int,
-	@idCliente int
-	AS
-	BEGIN TRANSACTION 
-		UPDATE Locacao SET dtLocacao = @dtLocacao, dtReserva = @dtReserva, id_funcionario = @idFuncionario, id_cliente = @idCliente WHERE id = @idLocacao
-		if @@ROWCOUNT > 0
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
+    IF NOT EXISTS (SELECT 1 FROM Pessoa WHERE Pessoa.id = @id)
+    BEGIN
+        INSERT INTO Pessoa
+        VALUES (@id, @nome, @nome, @cpf, @contato, @endereco);
+    END
 
-CREATE PROCEDURE AtualizarFilme
-	@codFilme int,
-	@titulo varchar(255),
-	@genero varchar(255),
-	@sinopse varchar(255),
-	@dtLancamento date
-	AS
-	BEGIN TRANSACTION 
-		UPDATE Filme SET titulo = @titulo, genero = @genero, sinopse = @sinopse, dt_lancamento = @dtLancamento WHERE cod_filme = @codFilme
-		if @@ROWCOUNT > 0
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
+    INSERT INTO Cliente 
+    VALUES (@id, @tipo);
 
---MUITO BOM:
+	IF @@ROWCOUNT > 1
+	BEGIN 
+		COMMIT TRANSACTION;
+		RETURN 1;
+	END
+	ELSE
+	BEGIN 
+		ROLLBACK TRANSACTION;
+		RETURN 0;
+	END
+go
+---
+
+CREATE PROCEDURE InserirFuncionario
+    @id int,
+	@nome varchar(255),
+	@cpf varchar(11),
+	@contato varchar(255),
+	@endereco varchar(255),
+	@dtContratacao DATE
+AS
+BEGIN TRANSACTION;
+
+    IF NOT EXISTS (SELECT 1 FROM Pessoa WHERE Pessoa.id = @id)
+    BEGIN
+        INSERT INTO Pessoa
+        VALUES (@id, @nome, @nome, @cpf, @contato, @endereco);
+    END
+
+    INSERT INTO Funcionario 
+    VALUES (@id, @dtContratacao);
+
+	IF @@ROWCOUNT > 1
+	BEGIN 
+		COMMIT TRANSACTION;
+		RETURN 1;
+	END
+	ELSE
+	BEGIN 
+		ROLLBACK TRANSACTION;
+		RETURN 0;
+	END
+go
+---
+
+CREATE PROCEDURE InserirFilmeAluguel
+    @cod_filme INT,
+    @titulo VARCHAR(255),
+    @genero VARCHAR(255),
+    @sinopse VARCHAR(255),
+    @dt_lancamento DATE,
+    @preco_diario DECIMAL(10,2),
+    @qtdDisponivel INT
+AS
+BEGIN TRANSACTION;
+
+    IF NOT EXISTS (SELECT 1 FROM Filme WHERE cod_filme = @cod_filme)
+    BEGIN
+        INSERT INTO Filme (cod_filme, titulo, genero, sinopse, dt_lancamento)
+        VALUES (@cod_filme, @titulo, @genero, @sinopse, @dt_lancamento);
+    END
+
+    INSERT INTO Filme_aluguel (cod_filme, preco_diario, qtdDisponivel)
+    VALUES (@cod_filme, @preco_diario, @qtdDisponivel);
+
+	IF @@ROWCOUNT > 1
+	BEGIN 
+		COMMIT TRANSACTION;
+		RETURN 1;
+	END
+	ELSE
+	BEGIN 
+		ROLLBACK TRANSACTION;
+		RETURN 0;
+	END
+go
+---
+CREATE PROCEDURE InserirFilmeVenda
+    @cod_filme INT,
+    @titulo VARCHAR(255),
+    @genero VARCHAR(255),
+    @sinopse VARCHAR(255),
+    @dt_lancamento DATE,
+    @preco_venda DECIMAL(10,2),
+    @qtdeEstoque INT
+AS
+BEGIN TRANSACTION;
+
+    IF NOT EXISTS (SELECT 1 FROM Filme WHERE cod_filme = @cod_filme)
+    BEGIN
+        INSERT INTO Filme (cod_filme, titulo, genero, sinopse, dt_lancamento)
+        VALUES (@cod_filme, @titulo, @genero, @sinopse, @dt_lancamento);
+    END
+
+    INSERT INTO Filme_venda (cod_filme, preco_venda, qtdeEstoque)
+    VALUES (@cod_filme, @preco_venda, @qtdeEstoque);
+
+    IF @@ROWCOUNT > 0
+    BEGIN 
+        COMMIT TRANSACTION;
+        RETURN 1;
+    END
+    ELSE
+    BEGIN 
+        ROLLBACK TRANSACTION;
+        RETURN 0;
+    END
+
+go
+---
 CREATE PROCEDURE EntregarFilme
 	@idLocacao int,
 	@codFilme int,
-	@status varchar(15),
-	@dtDevPrevista date,
 	@dtDevefetiva date
 	AS
 	BEGIN TRANSACTION 
-		UPDATE ComporAluguel SET cod_filme = @codFilme, status = 'Finalizado', data_dev_prevista = @dtDevPrevista, data_dev_efetiva = @dtDevefetiva WHERE idLocacao = @idLocacao
+		UPDATE ComporAluguel SET status = 'Finalizado', data_dev_efetiva = @dtDevefetiva WHERE idLocacao = @idLocacao and cod_filme = @codFilme
 		if @@ROWCOUNT > 0
 		BEGIN
 			COMMIT TRANSACTION
@@ -331,16 +195,14 @@ CREATE PROCEDURE EntregarFilme
 			return 0
 		END
 
---MUITO BOM:
+---
 CREATE PROCEDURE CancelarFilme
 	@idLocacao int,
 	@codFilme int,
-	@status varchar(15),
-	@dtDevPrevista date,
 	@dtDevefetiva date
 	AS
 	BEGIN TRANSACTION 
-		UPDATE ComporAluguel SET cod_filme = @codFilme, status = 'Cancelado', data_dev_prevista = @dtDevPrevista, data_dev_efetiva = @dtDevefetiva WHERE idLocacao = @idLocacao
+		UPDATE ComporAluguel SET status = 'Cancelado', data_dev_efetiva = @dtDevefetiva WHERE idLocacao = @idLocacao and cod_filme = @codFilme
 		if @@ROWCOUNT > 0
 		BEGIN
 			COMMIT TRANSACTION
@@ -351,14 +213,14 @@ CREATE PROCEDURE CancelarFilme
 			ROLLBACK TRANSACTION
 			return 0
 		END
-
-CREATE PROCEDURE AtualizarFilmeParaAluguel
+---
+CREATE PROCEDURE InserirFilmeNaLocacao
 	@codFilme int,
-	@precoDiario decimal(10,2),
-	@qtdDisponivel int
+	@idLocacao int,
+	@dtDevPrevista date
 	AS
-	BEGIN TRANSACTION 
-		UPDATE Filme_aluguel SET preco_diario = @precoDiario, qtdDisponivel = @qtdDisponivel WHERE cod_filme = @codFilme
+	BEGIN TRANSACTION
+		INSERT INTO ComporAluguel VALUES (@codFilme, @idLocacao, 'Ativo', @dtDevPrevista)
 		if @@ROWCOUNT > 0
 		BEGIN
 			COMMIT TRANSACTION
@@ -369,104 +231,14 @@ CREATE PROCEDURE AtualizarFilmeParaAluguel
 			ROLLBACK TRANSACTION
 			return 0
 		END
-
-CREATE PROCEDURE AtualizarFilmeParaCompra
+---
+CREATE PROCEDURE InserirFilmeNaReserva
 	@codFilme int,
-	@precoVenda decimal(10,2),
-	@qtdEstoque int
+	@idLocacao int,
+	@dtDevPrevista date
 	AS
-	BEGIN TRANSACTION 
-		UPDATE Filme_venda SET preco_venda = @precoVenda, qtdeEstoque = @qtdEstoque WHERE cod_filme = @codFilme
-		if @@ROWCOUNT > 0
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
-
-CREATE PROCEDURE AtualizarIntegranteDeFilme
-	@idIntegrante int,
-	@nomeIntegrante varchar(255)
-	AS
-	BEGIN TRANSACTION 
-		UPDATE IntegranteFilme SET nome = @nomeIntegrante WHERE id = @idIntegrante
-		if @@ROWCOUNT > 0
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
-
-CREATE PROCEDURE AtualizarParticipanteDeFilme
-	@codFilme int,
-	@idIntegrante int,
-	@diretor varchar(3),
-	@atorPrincipal varchar(3)
-	AS
-	BEGIN TRANSACTION 
-		UPDATE Participacao SET diretor = @diretor, atorPrincipal = @atorPrincipal, id = @idIntegrante WHERE cod_filme = @codFilme
-		if @@ROWCOUNT > 0
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
-
-CREATE PROCEDURE AtualizarCompra
-	@ntFiscal varchar(255),
-	@dtCompra date,
-	@valor decimal(10,2),
-	@idFuncionario int,
-	@idCliente int
-	AS
-	BEGIN TRANSACTION 
-		UPDATE Compra SET data = @dtCompra, valor = @valor, id_funcionario = @idFuncionario, id_cliente = @idCliente WHERE nota_fiscal = @ntFiscal
-		if @@ROWCOUNT > 0
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
-
-CREATE PROCEDURE AtualizarFuncionario
-	@id int,
-	@enderecoFilial varchar(255)
-	AS
-	BEGIN TRANSACTION 
-		UPDATE Funcionario SET enderecoFilial = @enderecoFilial WHERE id = @id
-		if @@ROWCOUNT > 0
-		BEGIN
-			COMMIT TRANSACTION
-			return 1
-		END
-		else
-		BEGIN
-			ROLLBACK TRANSACTION
-			return 0
-		END
-
-CREATE PROCEDURE AtualizarCliente
-	@id int,
-	@tipo varchar(255)
-	AS
-	BEGIN TRANSACTION 
-		UPDATE Cliente SET tipo = @tipo WHERE id = @id
+	BEGIN TRANSACTION
+		INSERT INTO ComporAluguel VALUES (@codFilme, @idLocacao, 'Reservado', @dtDevPrevista)
 		if @@ROWCOUNT > 0
 		BEGIN
 			COMMIT TRANSACTION

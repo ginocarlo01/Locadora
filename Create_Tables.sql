@@ -43,11 +43,11 @@ go
 
 CREATE TABLE Locacao (
 id INT NOT NULL,
-data DATE NOT NULL,
-dtLocacao DATE NOT NULL,
+dtLocacao DATE,
 dtReserva DATE,
 id_funcionario INT NOT NULL,
 id_cliente INT NOT NULL,
+valor DECIMAL(10,2) NOT NULL
 PRIMARY KEY (id),
 FOREIGN KEY (id_funcionario) REFERENCES Funcionario (id),
 FOREIGN KEY (id_cliente) REFERENCES Cliente (id)
