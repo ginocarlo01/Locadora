@@ -3,6 +3,7 @@ SELECT * FROM Pessoa;
 SELECT * FROM Funcionario;
 SELECT * FROM Cliente;
 SELECT * FROM Compra;
+SELECT * FROM RelatorioVendasGeral
 SELECT * FROM Locacao;
 SELECT * FROM Filme;
 SELECT * FROM Filme_venda;

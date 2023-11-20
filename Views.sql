@@ -168,7 +168,7 @@ LEFT JOIN
 LEFT JOIN
     Participacao P ON F.cod_filme = P.cod_filme
 LEFT JOIN
-    IntegranteFilme I ON P.id = I.id;
+    IntegranteFilme I ON P.id = I.id
 go
 select * from PesquisaLocal
 go
