@@ -6,22 +6,22 @@ CREATE PROCEDURE InserirLocacao
 	@valor NUMERIC(5,2)
 AS
 BEGIN
-	BEGIN TRANSACTION;
+	BEGIN TRANSACTION
 
 		INSERT INTO Locacao (id, dtLocacao, id_funcionario, id_cliente, valor)
 		VALUES (@idLocacao, @dtLocacao, @idFuncionario, @idCliente, @valor)
 
 		IF @@ROWCOUNT > 0
 		BEGIN
-			COMMIT TRANSACTION;
-			RETURN 1;
+			COMMIT TRANSACTION
+			RETURN 1
 		END
 		ELSE
 		BEGIN
-			ROLLBACK TRANSACTION;
-			RETURN 0;
+			ROLLBACK TRANSACTION
+			RETURN 0
 		END
-END;
+END
 ---
 CREATE PROCEDURE InserirReserva
 	@idReserva INT,
@@ -31,22 +31,22 @@ CREATE PROCEDURE InserirReserva
 	@valor NUMERIC(5,2)
 AS
 BEGIN
-	BEGIN TRANSACTION;
+	BEGIN TRANSACTION
 
 		INSERT INTO Locacao (id, dtReserva, id_funcionario, id_cliente, valor)
 		VALUES (@idReserva, @dtLocacao, @idFuncionario, @idCliente, @valor)
 
 		IF @@ROWCOUNT > 0
 		BEGIN
-			COMMIT TRANSACTION;
-			RETURN 1;
+			COMMIT TRANSACTION
+			RETURN 1
 		END
 		ELSE
 		BEGIN
-			ROLLBACK TRANSACTION;
-			RETURN 0;
+			ROLLBACK TRANSACTION
+			RETURN 0
 		END
-END;
+END
 ---
 CREATE PROCEDURE InserirCliente
     @id int,
@@ -56,26 +56,26 @@ CREATE PROCEDURE InserirCliente
 	@endereco varchar(255),
 	@tipo VARCHAR(255)
 AS
-BEGIN TRANSACTION;
+BEGIN TRANSACTION
 
     IF NOT EXISTS (SELECT 1 FROM Pessoa WHERE Pessoa.id = @id)
     BEGIN
         INSERT INTO Pessoa
-        VALUES (@id, @nome, @nome, @cpf, @contato, @endereco);
+        VALUES (@id, @nome, @nome, @cpf, @contato, @endereco)
     END
 
     INSERT INTO Cliente 
-    VALUES (@id, @tipo);
+    VALUES (@id, @tipo)
 
 	IF @@ROWCOUNT > 1
 	BEGIN 
-		COMMIT TRANSACTION;
-		RETURN 1;
+		COMMIT TRANSACTION
+		RETURN 1
 	END
 	ELSE
 	BEGIN 
-		ROLLBACK TRANSACTION;
-		RETURN 0;
+		ROLLBACK TRANSACTION
+		RETURN 0
 	END
 go
 ---
@@ -88,26 +88,26 @@ CREATE PROCEDURE InserirFuncionario
 	@endereco varchar(255),
 	@dtContratacao DATE
 AS
-BEGIN TRANSACTION;
+BEGIN TRANSACTION
 
     IF NOT EXISTS (SELECT 1 FROM Pessoa WHERE Pessoa.id = @id)
     BEGIN
         INSERT INTO Pessoa
-        VALUES (@id, @nome, @nome, @cpf, @contato, @endereco);
+        VALUES (@id, @nome, @nome, @cpf, @contato, @endereco)
     END
 
     INSERT INTO Funcionario 
-    VALUES (@id, @dtContratacao);
+    VALUES (@id, @dtContratacao)
 
 	IF @@ROWCOUNT > 1
 	BEGIN 
-		COMMIT TRANSACTION;
-		RETURN 1;
+		COMMIT TRANSACTION
+		RETURN 1
 	END
 	ELSE
 	BEGIN 
-		ROLLBACK TRANSACTION;
-		RETURN 0;
+		ROLLBACK TRANSACTION
+		RETURN 0
 	END
 go
 ---
@@ -121,26 +121,26 @@ CREATE PROCEDURE InserirFilmeAluguel
     @preco_diario DECIMAL(10,2),
     @qtdDisponivel INT
 AS
-BEGIN TRANSACTION;
+BEGIN TRANSACTION
 
     IF NOT EXISTS (SELECT 1 FROM Filme WHERE cod_filme = @cod_filme)
     BEGIN
         INSERT INTO Filme (cod_filme, titulo, genero, sinopse, dt_lancamento)
-        VALUES (@cod_filme, @titulo, @genero, @sinopse, @dt_lancamento);
+        VALUES (@cod_filme, @titulo, @genero, @sinopse, @dt_lancamento)
     END
 
     INSERT INTO Filme_aluguel (cod_filme, preco_diario, qtdDisponivel)
-    VALUES (@cod_filme, @preco_diario, @qtdDisponivel);
+    VALUES (@cod_filme, @preco_diario, @qtdDisponivel)
 
 	IF @@ROWCOUNT > 1
 	BEGIN 
-		COMMIT TRANSACTION;
-		RETURN 1;
+		COMMIT TRANSACTION
+		RETURN 1
 	END
 	ELSE
 	BEGIN 
-		ROLLBACK TRANSACTION;
-		RETURN 0;
+		ROLLBACK TRANSACTION
+		RETURN 0
 	END
 go
 ---
@@ -153,26 +153,26 @@ CREATE PROCEDURE InserirFilmeVenda
     @preco_venda DECIMAL(10,2),
     @qtdeEstoque INT
 AS
-BEGIN TRANSACTION;
+BEGIN TRANSACTION
 
     IF NOT EXISTS (SELECT 1 FROM Filme WHERE cod_filme = @cod_filme)
     BEGIN
         INSERT INTO Filme (cod_filme, titulo, genero, sinopse, dt_lancamento)
-        VALUES (@cod_filme, @titulo, @genero, @sinopse, @dt_lancamento);
+        VALUES (@cod_filme, @titulo, @genero, @sinopse, @dt_lancamento)
     END
 
     INSERT INTO Filme_venda (cod_filme, preco_venda, qtdeEstoque)
-    VALUES (@cod_filme, @preco_venda, @qtdeEstoque);
+    VALUES (@cod_filme, @preco_venda, @qtdeEstoque)
 
     IF @@ROWCOUNT > 0
     BEGIN 
-        COMMIT TRANSACTION;
-        RETURN 1;
+        COMMIT TRANSACTION
+        RETURN 1
     END
     ELSE
     BEGIN 
-        ROLLBACK TRANSACTION;
-        RETURN 0;
+        ROLLBACK TRANSACTION
+        RETURN 0
     END
 
 go
