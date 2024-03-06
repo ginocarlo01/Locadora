@@ -37,7 +37,7 @@ SELECT * FROM RelatorioFilmes
 go
 ---
 
-ALTER VIEW RelatorioGerenciamentoFuncionarios AS
+CREATE VIEW RelatorioGerenciamentoFuncionarios AS
 SELECT
     F.id AS 'ID Funcionario',
     P.nome AS 'Nome',
@@ -53,7 +53,7 @@ INNER JOIN
     Locacao L ON F.id = L.id_funcionario
 GROUP BY
     F.id, P.nome
-
+go
 select * from RelatorioGerenciamentoFuncionarios
 go
 
@@ -140,7 +140,7 @@ go
 
 ---
 
-ALTER VIEW PesquisaLocal AS
+CREATE VIEW PesquisaLocal AS
 SELECT DISTINCT
     F.cod_filme AS 'Código do Filme',
     F.titulo AS 'Título',
